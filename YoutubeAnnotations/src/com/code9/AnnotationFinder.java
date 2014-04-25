@@ -56,7 +56,7 @@ public class AnnotationFinder {
             List<Item> items = list.getItems();
             for (Item item : items) {
                 Id id = item.getId();
-                if (id != null) {
+                if (id.getVideoId() != null) {
                     videoIds.put(id.getVideoId(), id.getVideoId());
                     System.out.println(++count + " of "
                             + list.getPageInfo().getTotalResults() + ": "
