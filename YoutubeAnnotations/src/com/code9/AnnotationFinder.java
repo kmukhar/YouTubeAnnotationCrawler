@@ -108,8 +108,8 @@ public class AnnotationFinder {
     }
 
     private void sleep() {
-        // sleep 100 ms to 350 ms
-        sleep(r.nextInt(250) + 100);
+        // sleep 50 ms to 300 ms
+        sleep(r.nextInt(250) + 50);
     }
 
     private WebTarget getChannelListTarget(Client c, String nextPageToken) {
@@ -201,14 +201,14 @@ public class AnnotationFinder {
                         int end = line.indexOf("</TEXT>", start);
                         if (start != -1 && end != -1 && start < end) {
                             String newUrl = line.substring(start + 6, end);
-                            
+
                             if (newUrl.contains("goo.gl")) {
                                 if (!newUrl.startsWith("http"))
                                     newUrl = "http://" + newUrl;
                                 icarusIds.put(newUrl, newUrl);
-//                                Desktop.getDesktop().browse(
-//                                        new URI(newUrl));
-//                                System.in.read();
+                                // Desktop.getDesktop().browse(
+                                // new URI(newUrl));
+                                // System.in.read();
                             }
                         }
                     }
@@ -217,8 +217,8 @@ public class AnnotationFinder {
                 mue.printStackTrace();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
-//            } catch (URISyntaxException e) {
-//                e.printStackTrace();
+                // } catch (URISyntaxException e) {
+                // e.printStackTrace();
             } finally {
                 try {
                     if (is != null)
