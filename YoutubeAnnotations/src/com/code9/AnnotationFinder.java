@@ -148,12 +148,14 @@ public class AnnotationFinder {
                 out.close();
         }
 
-        f = new File("icarusIds.dat");
+        f = new File("icarusIds.html");
         try {
             fos = new FileOutputStream(f);
             out = new Out(fos);
+            out.println("<html><body>");
             for (String o : icarusIds.values())
-                out.println(o);
+                out.println("<a href=\"" + o + "\">" + o + "</a><p>");
+            out.println("</body></html>");
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         } finally {
