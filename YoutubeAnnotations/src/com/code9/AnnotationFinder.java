@@ -152,7 +152,7 @@ public class AnnotationFinder {
         try {
             fos = new FileOutputStream(f);
             out = new Out(fos);
-            for (String o : videoIds.values())
+            for (String o : icarusIds.values())
                 out.println(o);
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
