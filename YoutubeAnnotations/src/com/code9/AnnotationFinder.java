@@ -99,6 +99,7 @@ public class AnnotationFinder {
     }
 
     private void sleep() {
+        // sleep 100 ms to 350 ms
         sleep(r.nextInt(250) + 100);
     }
 
