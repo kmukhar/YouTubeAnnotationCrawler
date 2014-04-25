@@ -56,10 +56,12 @@ public class AnnotationFinder {
             List<Item> items = list.getItems();
             for (Item item : items) {
                 Id id = item.getId();
-                videoIds.put(id.getVideoId(), id.getVideoId());
-                System.out.println(++count + " of "
-                        + list.getPageInfo().getTotalResults() + ": "
-                        + id.getVideoId());
+                if (id != null) {
+                    videoIds.put(id.getVideoId(), id.getVideoId());
+                    System.out.println(++count + " of "
+                            + list.getPageInfo().getTotalResults() + ": "
+                            + id.getVideoId());
+                }
             }
 
             if (nextPageToken == null)
