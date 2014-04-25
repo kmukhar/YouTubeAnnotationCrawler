@@ -1,8 +1,17 @@
 package com.code9;
 
+import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -58,9 +67,9 @@ public class AnnotationFinder {
                 Id id = item.getId();
                 if (id.getVideoId() != null) {
                     videoIds.put(id.getVideoId(), id.getVideoId());
-                     System.out.println(++count + " of "
-                     + list.getPageInfo().getTotalResults() + ": "
-                     + id.getVideoId());
+                    System.out.println(++count + " of "
+                            + list.getPageInfo().getTotalResults() + ": "
+                            + id.getVideoId());
                 }
             }
 
@@ -115,8 +124,8 @@ public class AnnotationFinder {
         // GoogleApiKey.key is a String that is your Google API Key
         // See https://developers.google.com/console/help/#WhatIsKey
         target = target.queryParam("key", GoogleApiKey.key);
-        target = target.queryParam("channelId", "UC_x5XG1OV2P6uZZ5FSM9Ttw")
-                .queryParam("part", "id");
+        target = target.queryParam("channelId", "UC_x5XG1OV2P6uZZ5FSM9Ttw");
+        target = target.queryParam("part", "id");
         target = target.queryParam("maxResults", 50);
         target = target.queryParam("order", "date");
         return target;
@@ -175,8 +184,56 @@ public class AnnotationFinder {
         }
     }
 
+    private void getAnnotations() {
+        String baseUri = "https://www.youtube.com/annotations_invideo?features=1&legacy=1&video_id=";
+        for (String videoId : videoIds.values()) {
+            InputStream is = null;
+            try {
+                URL url = new URL(baseUri + videoId);
+                is = url.openStream(); // throws an IOException
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(is));
+
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.contains("<TEXT>")) {
+                        int start = line.indexOf("<TEXT>");
+                        int end = line.indexOf("</TEXT>", start);
+                        if (start != -1 && end != -1 && start < end) {
+                            String newUrl = line.substring(start + 6, end);
+                            
+                            if (newUrl.contains("goo.gl")) {
+                                if (!newUrl.startsWith("http"))
+                                    newUrl = "http://" + newUrl;
+                                icarusIds.put(newUrl, newUrl);
+//                                Desktop.getDesktop().browse(
+//                                        new URI(newUrl));
+//                                System.in.read();
+                            }
+                        }
+                    }
+                }
+            } catch (MalformedURLException mue) {
+                mue.printStackTrace();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+//            } catch (URISyntaxException e) {
+//                e.printStackTrace();
+            } finally {
+                try {
+                    if (is != null)
+                        is.close();
+                } catch (IOException ioe) {
+                    // nothing to see here
+                }
+            }
+        }
+        writeData();
+    }
+
     public static void main(String[] args) {
         AnnotationFinder af = new AnnotationFinder();
         af.getVideoIds();
+        af.getAnnotations();
     }
 }
