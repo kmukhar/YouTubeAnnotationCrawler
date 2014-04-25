@@ -58,16 +58,14 @@ public class AnnotationFinder {
                 Id id = item.getId();
                 if (id.getVideoId() != null) {
                     videoIds.put(id.getVideoId(), id.getVideoId());
-                    System.out.println(++count + " of "
-                            + list.getPageInfo().getTotalResults() + ": "
-                            + id.getVideoId());
+                     System.out.println(++count + " of "
+                     + list.getPageInfo().getTotalResults() + ": "
+                     + id.getVideoId());
                 }
             }
 
             if (nextPageToken == null)
                 break;
-
-            target = getChannelListTarget(c, nextPageToken);
 
             sleep();
 
@@ -75,6 +73,8 @@ public class AnnotationFinder {
 
             while (tryRequest) {
                 try {
+                    c = ClientBuilder.newClient();
+                    target = getChannelListTarget(c, nextPageToken);
                     responseMsg = target.request(MediaType.TEXT_PLAIN_TYPE)
                             .get(String.class);
                     list = gson.fromJson(responseMsg, ChannelList.class);
@@ -104,7 +104,7 @@ public class AnnotationFinder {
 
     private WebTarget getChannelListTarget(Client c, String nextPageToken) {
         WebTarget target = getChannelListTarget(c);
-        target.queryParam("pageToken", nextPageToken);
+        target = target.queryParam("pageToken", nextPageToken);
         return target;
     }
 
